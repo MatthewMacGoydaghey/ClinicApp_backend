@@ -12,7 +12,7 @@ import { AuthGuard } from './authGuard';
     global: true,
     secret: SECRET || 'SECRETIDZE',
     signOptions: {
-      expiresIn: '1h'
+      expiresIn: '1h' 
     }
   }), UsersModule],
   controllers: [AuthController],
