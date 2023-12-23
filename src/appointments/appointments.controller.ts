@@ -42,7 +42,7 @@ attachAppointmentToTheDoctor(@Body() body: AttachAppointmentDTO) {
 
 
 @ApiOperation({summary: 'Deletes specified appointment'})
-@ApiResponse({status: 200, type: HttpException})
+@ApiResponse({status: 204, type: HttpException})
 @Delete(':id')
 @RequiredPositions('DOCTORS')
 @UseGuards(PositionsGuard)

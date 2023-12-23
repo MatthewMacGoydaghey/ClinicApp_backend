@@ -14,7 +14,11 @@ import { ReportsModule } from './reports/reports.module';
 import { Report } from './reports/DTO/report-entity';
 import { FilesModule } from './files/files.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { GatewayModule } from './gateway/gateway.module';
+import { ChatModule } from './chat/chat.module';
 import * as path from 'path'
+import { Room } from './chat/DTO/room-entity';
+import { Message } from './chat/DTO/message-entity';
 
 @Module({
   imports: [UsersModule, ConfigModule.forRoot({
@@ -31,9 +35,9 @@ import * as path from 'path'
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [User, Appointment, Position, Report],
+      entities: [User, Appointment, Position, Report, Message, Room],
       synchronize: true
-  }), AuthModule, AppointmentsModule, PositionsModule, ReportsModule, FilesModule],
+  }), AuthModule, AppointmentsModule, PositionsModule, ReportsModule, ChatModule, FilesModule, GatewayModule],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, Param, ParseIntPipe, Patch, Post, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ReportsService } from './reports.service';
 import { CreateReportDTO } from './DTO/createReport.dto';
 import { UpdateReportDTO } from './DTO/updateReport.dto';
@@ -6,8 +6,10 @@ import { PositionsGuard } from 'src/auth/positionsGuard';
 import { RequiredPositions } from 'src/auth/DTO/constant';
 import { CurrentUserRequest } from 'src/appointments/appointments.service';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 const doctors = ['CARDIOLOGIST', 'THERAPIST']
 
+@ApiTags('Reports')
 @Controller('reports')
 export class ReportsController {
   constructor(private ReportsService: ReportsService) {
@@ -16,6 +18,8 @@ export class ReportsController {
 
 
 
+  @ApiOperation({summary: 'Finds all reports'})
+  @ApiResponse({status: 200, type: HttpException})
   @RequiredPositions('HEAD PHYSICIAN')
   @UseGuards(PositionsGuard)
   @Get()
@@ -24,6 +28,8 @@ export class ReportsController {
   }
 
 
+  @ApiOperation({summary: 'Finds all sent reports of current users'})
+  @ApiResponse({status: 200, type: HttpException})
   @RequiredPositions('DOCTORS')
   @UseGuards(PositionsGuard)
   @Get('/sent')
@@ -32,12 +38,16 @@ export class ReportsController {
   }
 
 
+  @ApiOperation({summary: 'Finds all recivied reports of current user'})
+  @ApiResponse({status: 200, type: HttpException})
   @Get('/recivied')
   findReciviedReports(@Req() req: CurrentUserRequest) {
     return this.ReportsService.findReciviedReports(req)
   }
 
 
+  @ApiOperation({summary: 'Creates and sents report to the specified user'})
+  @ApiResponse({status: 200, type: HttpException})
   @RequiredPositions('DOCTORS')
   @UseGuards(PositionsGuard)
   @Post()
@@ -47,6 +57,8 @@ export class ReportsController {
   }
 
 
+  @ApiOperation({summary: 'Updates report of current user'})
+  @ApiResponse({status: 200, type: HttpException})
   @RequiredPositions('DOCTORS')
   @UseGuards(PositionsGuard)
   @Patch(':id')

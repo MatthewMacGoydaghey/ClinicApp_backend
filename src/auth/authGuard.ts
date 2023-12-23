@@ -3,6 +3,7 @@ import { Reflector } from "@nestjs/core";
 import { JwtService } from "@nestjs/jwt";
 import { Observable } from "rxjs";
 import { IS_PUBLIC_KEY } from "./DTO/constant";
+import { Socket } from "dgram";
 
 
 @Injectable()
@@ -37,6 +38,45 @@ export class AuthGuard implements CanActivate {
    return true
    } catch (error) {
     throw new UnauthorizedException({message: error})
+   }
+  }
+  
+}
+
+
+interface SocketForAuth extends Socket {
+  handshake: {
+    headers: object
+  }
+}
+
+@Injectable()
+export class AuthWSGuard implements CanActivate {
+  constructor(private jwtService: JwtService, private Reflector: Reflector) {
+
+  }
+  canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
+
+
+   const request = context.switchToWs().getClient() as SocketForAuth
+   try {
+    const authHeader = request.handshake.headers['authorization']
+    if (!authHeader) {
+      request['unauthorized'] = 'true'
+      return true
+    }
+    const bearer = authHeader.split(' ')[0]
+    const token = authHeader.split(' ')[1]
+    if (!token || !bearer) {
+      request['unauthorized'] = 'true'
+      return true
+   }
+   const user = this.jwtService.verify(token)
+   request['user'] = user
+   return true
+   } catch (error) {
+    request['unauthorized'] = 'true'
+      return true
    }
   }
   

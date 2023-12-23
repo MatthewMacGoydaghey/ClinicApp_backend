@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Appointment } from "src/appointments/DTO/appointment-entity";
+import { Message } from "src/chat/DTO/message-entity";
 import { Position } from "src/positions/DTO/position-entity";
 import { Report } from "src/reports/DTO/report-entity";
 import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
@@ -41,7 +42,6 @@ appointments: Appointment[]
 @OneToMany(() => Appointment, (appointment) => appointment.doctor)
 patientAppointments: Appointment[]
 
-
 @ApiProperty()
 @OneToMany(() => Report, (report) => report.sender)
 sentReports: Report[]
@@ -49,6 +49,11 @@ sentReports: Report[]
 @ApiProperty()
 @OneToMany(() => Report, (report) => report.recipient)
 receivedReports: Report[]
+
+@ApiProperty()
+@OneToMany(() => Message, (message) => message.user)
+messages: Message[]
+
 }
 function JoinColumn(): (target: User, propertyKey: "doctorsAppointments") => void {
   throw new Error("Function not implemented.");
