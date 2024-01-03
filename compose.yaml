@@ -15,17 +15,17 @@ services:
     restart: always
   postgres:
     container_name: postgres
-    image: postgres:14
+    image: postgres:16.1
     env_file:
       - .env
     environment:
-      PG_DATA: /var/lib/postgresql/data/pgdata
-      POSTGRES_HOST_AUTH_METHOD: "trust"
+      PG_DATA: /var/lib/postgresql/data
+      POSTGRES_PASSWORD: 1234
     ports:
       - 5432:5432
     volumes:
-      - pgdata:/var/lib/postgresql/data/pgdata
+      - pg_data:/var/lib/postgresql/data
     restart: always
 
 volumes:
-  pgdata:    
+  pg_data:    
