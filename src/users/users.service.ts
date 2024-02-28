@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDTO } from './DTO/create-user.dto';
 import { UpdateUserDTO } from './DTO/update-user.dto';
 import { Repository } from 'typeorm';
@@ -7,21 +7,31 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { GrantPositionDTO } from 'src/users/DTO/grant-position.dto';
 import { PositionsService } from 'src/positions/positions.service';
 import { Doctors } from 'src/appointments/DTO/appointment-entity';
+import { Cache } from '@nestjs/cache-manager';
 
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private UserRepository: Repository<User>,
-    private PositionsService: PositionsService) {
+    private PositionsService: PositionsService,
+    @Inject('CACHE_MANAGER') private cacheManager: Cache) {
   }
 
 
   async findAll(): Promise<User[]> {
-      return this.UserRepository.find({relations: {
+      const cache = await this.cacheManager.get('users')
+      if (cache) {
+        return cache as User[]
+      } else {
+      const users = await this.UserRepository.find({relations: {
         positions: true
       }})
-  }
+      await this.cacheManager.set('users', users, 50000)
+      return users
+    }
+    }
+  
 
 
   async findDoctors(doctor: Doctors): Promise<User[]> {

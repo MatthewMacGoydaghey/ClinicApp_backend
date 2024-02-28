@@ -22,8 +22,8 @@ export class ChatController {
   @ApiOperation({summary: 'Finds all messages'})
 @ApiResponse({status: 200, type: HttpException})
   @Get('/messages')
-  findAllMessages() {
-   return this.ChatService.findAllMessages()
+  findAllMessages(@Req() req: CurrentUserRequest) {
+   return this.ChatService.findAllMessages(req)
   }
 
 

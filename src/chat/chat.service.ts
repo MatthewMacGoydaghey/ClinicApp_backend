@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Room } from './DTO/room-entity';
 import { Repository } from 'typeorm';
@@ -7,13 +7,15 @@ import { CreateRoomDTO } from './DTO/create-room.dto';
 import { CurrentUserRequest } from 'src/appointments/appointments.service';
 import { Message } from './DTO/message-entity';
 import { CreateMessageDTO } from './DTO/create-message-dto';
+import { Cache } from '@nestjs/cache-manager';
 
 @Injectable()
 export class ChatService {
   constructor(
     @InjectRepository(Room) private ChatRepository: Repository<Room>,
     @InjectRepository(Message) private MessagesRepository: Repository<Message>,
-    private readonly UsersService: UsersService
+    private readonly UsersService: UsersService,
+    @Inject('CACHE_MANAGER') private CacheManager: Cache
   ) {}
 
 
@@ -25,8 +27,15 @@ export class ChatService {
   }
 
 
-  async findAllMessages(): Promise<Message[]> {
-    return this.MessagesRepository.find()
+  async findAllMessages(req?: CurrentUserRequest): Promise<Message[]> {
+    const userId = req.user.userId
+    const cache = await this.CacheManager.get(`messages.user:${userId}`)
+    if (cache) {
+      return cache as Message[]
+    } 
+    const messages = await this.MessagesRepository.find()
+    await this.CacheManager.set(`messages.user:${userId}`, messages, 2000)
+    return messages
   }
 
 
@@ -68,6 +77,7 @@ const foundRoom = await this.ChatRepository.findOne({where: {id: parseInt(roomId
 if (!foundRoom) {
   return false
 }
+console.log(foundRoom)
 return foundRoom
 }
 

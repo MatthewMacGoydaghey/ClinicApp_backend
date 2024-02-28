@@ -19,6 +19,7 @@ import { ChatModule } from './chat/chat.module';
 import * as path from 'path'
 import { Room } from './chat/DTO/room-entity';
 import { Message } from './chat/DTO/message-entity';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [UsersModule, ConfigModule.forRoot({
@@ -37,7 +38,7 @@ import { Message } from './chat/DTO/message-entity';
       database: process.env.DB_NAME,
       entities: [User, Appointment, Position, Report, Message, Room],
       synchronize: true
-  }), AuthModule, AppointmentsModule, PositionsModule, ReportsModule, ChatModule, FilesModule, GatewayModule],
+  }), AuthModule, AppointmentsModule, PositionsModule, ReportsModule, ChatModule, FilesModule, GatewayModule, RedisModule],
   controllers: [AppController],
   providers: [AppService],
 })
