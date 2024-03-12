@@ -1,12 +1,28 @@
 # Backend code of medical environment control system on NestJS
 
-The project implements the following:
+Функционал позволяет:
 
-1. Authorization based on the JWT standard
-2. Authentication based on an advanced role system, built-in decorators and AuthGuards
-3. In-user chat using Socket.io
-4. Open API described using Swagger
-5. Checking server requests for compliance with the template using Class-Validator
-6. File system based on embedded modules of Node.js
-7. An even more extensive list of CRUD and other operations
-8. App packed in the Docker using Docker compose
+Пациентам:
+-получать информацию о доступных услугах
+-записываться на приём к врачу
+-получать информацию о дате приёма и изменениях в записи
+-получать результаты обследования
+
+
+Сотрудникам:
+
+Операторы:
+-записывать пациентов на приём
+
+Врачи:
+-получать данные о записанных к ним пациентах
+-отправлять пациентам и другим врачам результаты обследованиями пациента (файлы включительно)
+-перезаписывать/снимать пациентов с приёма
+
+Главврач:
+-Выдавать/удалять/изменять сотрудникам должности
+-Получать информацию о всех сотрудниках и пациентах
+-Отслеживать активность сотрудников
+
+Все сотрудники:
+Коммуницировать друг с другом в рабочем чате посредством WebSocket
