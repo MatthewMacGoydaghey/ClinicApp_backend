@@ -1,4 +1,4 @@
-# Backend code of medical environment control system on NestJS
+# Backend for medical environment control system on NestJS
 
 Функционал позволяет:
 
